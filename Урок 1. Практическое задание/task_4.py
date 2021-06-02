@@ -25,3 +25,41 @@
 
 Задание творческое. Здесь нет жестких требований к выполнению.
 """
+
+
+def check_1(user: str, password: str, users: dict) -> str:  # Сложность O(n)
+    for key, value in users.items():        # O(n)
+        if user == key:                     # O(1)
+            if not value[1]:                # O(1)
+                return 'Ваша учетная запись не активирована. Пожалуйста пройдите активацию'  # O(1)
+            if value[0] == password:        # O(1)
+                return 'Доступ разрешен'    # O(1)
+    return 'Доступ запрещен'                # O(1)
+
+
+def check_2(user: str, password: str, users: dict) -> str:  # Сложность O(1)
+    try:
+        if not users[user][1]:              # O(1)
+            return 'Ваша учетная запись не активирована. Пожалуйста пройдите активацию'  # O(1)
+        if users[user][0] == password:      # O(1)
+            return 'Доступ разрешен'        # O(1)
+        return 'Доступ запрещен'            # O(1)
+    except KeyError:                        # O(1)
+        return 'Доступ запрещен'            # O(1)
+
+
+users_dict = {
+    'user_1': ('123', True),
+    'user_2': ('qwerty', True),
+    'user_3': ('god', False),
+    'user_4': ('sex', False),
+    'user_5': ('qwerty123', True),
+    'user_6': ('321', True)
+}
+
+print(check_1('user_1', '123', users_dict))
+print(check_1('user_2', 'qwerty', users_dict))
+print(check_1('user_3', 'god', users_dict))
+print(check_1('user_3', 'sex', users_dict))
+print(check_2('user_5', '123', users_dict))
+print(check_2('user_5', 'qwerty123', users_dict))

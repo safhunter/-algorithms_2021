@@ -28,3 +28,76 @@
 
 Задание творческое. Здесь нет жестких требований к выполнению.
 """
+
+
+class Plate(object):
+
+    def __init__(self, plate_id):
+        self.plate_id = plate_id
+
+    def __str__(self):
+        return str(self.plate_id)
+
+
+class PlatesStack(object):
+
+    def __init__(self, plates_per_stack: int):
+        if plates_per_stack == 0:
+            raise ValueError('Stack max count must be grater then 0')
+        self.plates_per_stack = plates_per_stack
+        self.stack = []
+
+    def put_plate(self, new_plate: Plate):
+        if not self.is_full():
+            self.stack.append(new_plate)
+
+    def get_plate(self):
+        if not self.is_empty():
+            return self.stack.pop()
+        else:
+            return None
+
+    def is_full(self):
+        return len(self.stack) >= self.plates_per_stack
+
+    def is_empty(self):
+        return self.stack == []
+
+
+class Plates(object):
+
+    def __init__(self, plates_per_stack: int):
+        if plates_per_stack == 0:
+            raise ValueError('Stack max count must be grater then 0')
+        self.plates_per_stack = plates_per_stack
+        self.stacks_list = []
+        self.stacks_list.append(PlatesStack(plates_per_stack))
+
+    def put_plate(self, new_plate: Plate):
+        if self.stacks_list[len(self.stacks_list)-1].is_full():
+            print(f'Add new plates stack')
+            self.stacks_list.append(PlatesStack(self.plates_per_stack))
+        self.stacks_list[len(self.stacks_list) - 1].put_plate(new_plate)
+
+    def get_plate(self):
+        if self.have_plates():
+            taken_plate = self.stacks_list[len(self.stacks_list) - 1].get_plate()
+            if self.stacks_list[len(self.stacks_list)-1].is_empty():
+                print(f'Remove plates stack')
+                self.stacks_list.pop()
+            return taken_plate
+        else:
+            return None
+
+    def have_plates(self):
+        return len(self.stacks_list) > 0
+
+
+plates_list = [Plate(x) for x in range(100)]
+plates = Plates(3)
+for plate in plates_list:
+    plates.put_plate(plate)
+
+while plates.have_plates():
+    print(f'Take plate: {plates.get_plate()}')
+
